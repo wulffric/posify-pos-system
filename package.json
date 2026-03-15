@@ -1,0 +1,23 @@
+{
+  "name": "posify-pos-system",
+  "version": "1.0.0",
+  "description": "Web-based POS system for small retail businesses (COMP231 Project)",
+  "homepage": "https://github.com/wulffric/posify-pos-system#readme",
+  "bugs": {
+    "url": "https://github.com/wulffric/posify-pos-system/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wulffric/posify-pos-system.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

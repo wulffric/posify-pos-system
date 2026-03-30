@@ -1,47 +1,33 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes");
-const paymentRoutes = require("./routes/paymentRoutes");
+const adminRoutes = require("./routes/adminRoutes");
+const transactionRoutes = require("./routes/transactionRoutes");
 
 const app = express();
 
-/*
-Middleware
-*/
 app.use(cors());
 app.use(express.json());
 
-/*
-MongoDB Connection
-*/
-mongoose.connect("mongodb://127.0.0.1:27017/posify")
-.then(() => {
-    console.log("MongoDB connected");
-})
-.catch((err) => {
-    console.log("MongoDB connection error:", err.message);
-});
+mongoose.connect(process.env.MONGO_URI)
+.then(() => console.log("MongoDB Atlas connected"))
+.catch(err => console.log("Mongo error:", err.message));
 
-/*
-Routes
-*/
 app.use("/api", authRoutes);
 app.use("/api", productRoutes);
-app.use("/api", paymentRoutes);
+app.use("/api", adminRoutes);
+app.use("/api", transactionRoutes);
 
-/*
-Test Route
-*/
 app.get("/", (req, res) => {
     res.send("POSify backend running");
 });
 
-/*
-Start Server
-*/
-app.listen(5000, () => {
-    console.log("Server running on port 5000");
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });

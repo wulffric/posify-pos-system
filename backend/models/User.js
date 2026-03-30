@@ -3,13 +3,16 @@ const mongoose = require("mongoose");
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
 
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        lowercase: true,
+        trim: true
     },
 
     password_hash: {
@@ -19,7 +22,18 @@ const UserSchema = new mongoose.Schema({
 
     role: {
         type: String,
+        enum: ["admin", "cashier", "manager"],
         default: "cashier"
+    },
+
+    isActive: {
+        type: Boolean,
+        default: true
+    },
+
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
 });
 

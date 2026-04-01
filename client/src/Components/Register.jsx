@@ -31,7 +31,7 @@ const Register = () => {
         <section id="center">
             {/* Matches the Hero section from App.jsx */}
             <div className="hero">
-                <h1>Staff Registration</h1>
+                <h2>Staff Registration</h2>
                 <p>Onboard a new cashier to the POSify system.</p>
             </div>
 

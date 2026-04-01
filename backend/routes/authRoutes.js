@@ -38,6 +38,16 @@ router.post("/register", async (req, res) => {
     }
 });
 
+// test route to get all users (for admin purposes)
+router.get("/users", async (req, res) => {
+    try {
+        const users = {'test': 'test'};
+        res.json({ users });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to fetch users" });
+    }
+});
+
 /*
 LOGIN
 */
@@ -46,6 +56,19 @@ router.post("/login", async (req, res) => {
 
     if (!email || !password) {
         return res.status(400).json({ error: "Email and password required" });
+    }
+
+    //hardcoded admin login for testing purposes
+    if(email==="admin@gmail.com" && password==="admin"){
+        return res.json({
+            message: "Login successful",
+            user: {
+                id: "admin",
+                name: "Admin",
+                email: email,
+                role: "admin"
+            }
+        });
     }
 
     try {
@@ -76,13 +99,18 @@ router.post("/login", async (req, res) => {
         });
 
     } catch (err) {
-        res.status(500).json({ error: "Login failed" });
+        res.status(500).json({ error: "Login failed1" });
     }
+});
+
+// Logout route (for client-side token clearing if needed)
+router.post("/logout", (req, res) => {    
+    res.json({ message: "Logout successful" });
 });
 
 /*
 Login user
-*/
+
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
@@ -120,10 +148,10 @@ router.post("/login", async (req, res) => {
 
     } catch (error) {
         res.status(500).json({
-            error: "Login failed"
+            error: "Login failed2"
         });
     }
-});
+});*/
 
 
 module.exports = router;

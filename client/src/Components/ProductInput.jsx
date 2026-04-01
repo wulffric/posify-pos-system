@@ -1,9 +1,11 @@
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Receipt from './Receipt';
 
 const ProductInput = () => {
-    const [cashierName] = useState("John Doe"); // Hardcoded for demo
+    const navigate = useNavigate();
+    const [cashierName] = localStorage.getItem('username') ? [localStorage.getItem('username')] : ["John Doe"]; // Hardcoded for demo
     const [searchTerm, setSearchTerm] = useState("");
     const [quantity, setQuantity] = useState(1);
     const [addedItems, setAddedItems] = useState([]);
@@ -42,8 +44,8 @@ const ProductInput = () => {
     };
 
     const logout = () => {
-        alert("Logged out");
-        // Handle logout logic here
+        localStorage.clear();
+        navigate('/');
     };
 
     const handleCashAmountChange = (e) => {

@@ -39,3 +39,24 @@ router.post("/transactions/:id/refund", async (req, res) => {
 });
 
 module.exports = router;
+
+// M4 - Refund transaction and update inventory
+router.put('/refund/:id', async (req, res) => {
+  try {
+    const transaction = await Transaction.findById(req.params.id);
+
+    if (!transaction) {
+      return res.status(404).json({ message: "Transaction not found" });
+    }
+
+    for (let item of transaction.items) {
+      await Product.findByIdAndUpdate(item.product_id, {
+        $inc: { stock_quantity: item.quantity }
+      });
+    }
+
+    res.json({ message: "Refund processed and inventory updated" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});

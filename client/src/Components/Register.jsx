@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import API_BASE_URL from '../config/api';
 
 const Register = () => {
     const [formData, setFormData] = useState({
         name: '', 
         email: '',
-        password: ''
+        password: '',
+        role: ''
     });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!formData.name || !formData.email || !formData.password || formData.role=='Select Role') {
+            alert("Please fill in all fields.");
+            return;
+        }
         try {
-            const response = await fetch("http://localhost:5000/api/register", {
+            const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
@@ -18,7 +25,7 @@ const Register = () => {
             const data = await response.json();
             if (response.ok) {
                 alert(data.message); 
-                setFormData({ name: '', email: '', password: '' });
+                setFormData({ name: '', email: '', password: '', role: '' });
             } else {
                 alert("Error: " + (data.error || "Something went wrong"));
             }
@@ -32,7 +39,7 @@ const Register = () => {
             {/* Matches the Hero section from App.jsx */}
             <div className="hero">
                 <h2>Staff Registration</h2>
-                <p>Onboard a new cashier to the POSify system.</p>
+                <p>Onboard a new member to the POSify system.</p>
             </div>
 
             {/* Added a container div to match the spacing of ProductInput */}
@@ -66,8 +73,21 @@ const Register = () => {
                             required 
                             style={{ marginBottom: '0' }}
                         />
+                        
+                        <select 
+                            className="counter" 
+                            value={formData.role}
+                            onChange={(e) => setFormData({...formData, role: e.target.value})}
+                            required 
+                            style={{ marginBottom: '0' }}
+                        >
+                            <option value="">Select Role</option>
+                            <option value="cashier">Cashier</option>
+                            <option value="admin">Admin</option>
+                            <option value="manager">Manager</option>
+                        </select>
                         <button type="submit" className="counter" style={{ cursor: 'pointer', fontWeight: 'bold', marginTop: '10px' }}>
-                            Create Cashier Account
+                            Create Account
                         </button>
                     </div>
                 </form>

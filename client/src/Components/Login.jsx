@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom'
 import ProductInput from './ProductInput.jsx'
+import AdminHome from './AdminHome.jsx'
 import API_BASE_URL from '../config/api';
 
 
@@ -25,6 +26,7 @@ const Login = () => {
         e.preventDefault();
         <Router>
                 <Route path="/ProductInput" element={<ProductInput />} />
+                <Route path="/AdminHome" element={<AdminHome />} />
         </Router>
         try {
             const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
@@ -40,12 +42,15 @@ const Login = () => {
             }
 
             const data = await response.json();
-            localStorage.setItem('username', data.user.id);
+            localStorage.setItem('userId', data.user.id);
             localStorage.setItem('username', data.user.name);
             localStorage.setItem('userRole', data.user.role);
-            
-            navigate('/ProductInput');
-            
+
+            if (data.user.role === 'admin') {
+                navigate('/AdminHome');
+            } else {
+                navigate('/ProductInput');
+            }
 
         } catch (error) {
             setError(error.message);
@@ -81,6 +86,7 @@ const Login = () => {
                                 style={{ marginBottom: '0' }}
                             />
                             <button type="submit"
+                                onClick={handleSubmit}
                                 className="counter"
                                 style={{ cursor: 'pointer', fontWeight: 'bold', marginTop: '10px' }}
                             >

@@ -4,6 +4,8 @@ import Login from './Components/Login.jsx'
 import Register from './Components/Register.jsx'
 import AllProducts from './Components/AllProducts.jsx'
 import EditProduct from './Components/EditProduct.jsx'
+import AdminHome from './Components/AdminHome.jsx'
+import AddNewProduct from './Components/AddNewProduct.jsx'
 import { Routes, Route, Link } from 'react-router-dom'
 import './App.css'
 
@@ -20,10 +22,10 @@ function App() {
               <div>
                 <Login />
               </div>
-              <div >
+              {/*<div >
                 <Register />
               </div>
-              {/*<div>
+              <div>
                 <AllProducts />
               </div>*/}
             </div>
@@ -33,7 +35,11 @@ function App() {
         } />
         <Route path="/ProductInput" element={<ProductInput />} />
         <Route path="/AllProducts" element={<AllProducts />} />
+        <Route path="/AddNewProduct" element={<AddNewProduct />} />
         <Route path="/EditProduct/:productId" element={<EditProduct />} />
+        <Route path="/Register" element={<Register />} />
+        <Route path="/Login" element={<Login />} />
+        <Route path="/AdminHome" element={<AdminHome />} />
       </Routes>
       {
         //<Link to="/ProductInput">Go to Product Input</Link>

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Receipt from './Receipt';
+import API_BASE_URL from '../config/api';
 
 const ProductInput = () => {
     const navigate = useNavigate();
@@ -23,19 +24,43 @@ const ProductInput = () => {
         { name: "Bread", barcode: "202", price: 3.00 },
     ];
 
-    const addItem = () => {
-        const item = items.find(i => i.name.toLowerCase() === searchTerm.toLowerCase() || i.barcode === searchTerm);
-        if (item) {
-            const existingItem = addedItems.find(ai => ai.name === item.name);
-            if (existingItem) {
-                setAddedItems(addedItems.map(ai => ai.name === item.name ? { ...ai, quantity: ai.quantity + quantity } : ai));
+    const addItem = async () => {
+        if (!searchTerm) {
+            alert("Please enter a product name or barcode");
+            return;
+        }
+
+        try {
+            // Try to fetch by barcode first
+            const response = await fetch(`${API_BASE_URL}/api/products/barcode/${searchTerm}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const item = await response.json();
+                
+                // Add to cart
+                const existingItem = addedItems.find(ai => ai._id === item._id);
+                if (existingItem) {
+                    setAddedItems(addedItems.map(ai => 
+                        ai._id === item._id 
+                            ? { ...ai, quantity: ai.quantity + quantity } 
+                            : ai
+                    ));
+                } else {
+                    setAddedItems([...addedItems, { ...item, quantity }]);
+                }
+                setSearchTerm("");
+                setQuantity(1);
             } else {
-                setAddedItems([...addedItems, { ...item, quantity }]);
+                alert("Product not found");
             }
-            setSearchTerm("");
-            setQuantity(1);
-        } else {
-            alert("Item not found");
+        } catch (error) {
+            console.error('Error fetching product:', error);
+            alert("Error finding product. Please try again.");
         }
     };
 

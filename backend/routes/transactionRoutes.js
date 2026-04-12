@@ -39,3 +39,26 @@ router.post("/transactions/:id/refund", async (req, res) => {
 });
 
 module.exports = router;
+
+// M3 - Calculate daily totals
+router.get('/reports/daily/summary', async (req, res) => {
+  const { date } = req.query;
+
+  try {
+    const transactions = await Transaction.find({
+      date: {
+        $gte: new Date(date),
+        $lt: new Date(new Date(date).setDate(new Date(date).getDate() + 1))
+      }
+    });
+
+    const total_sales = transactions.reduce((sum, t) => sum + t.total_amount, 0);
+
+    res.json({
+      total_sales,
+      total_transactions: transactions.length
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});

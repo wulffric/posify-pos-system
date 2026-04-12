@@ -38,32 +38,40 @@ const AllProducts = () => {
     return (
         <div>
             <h1>All Products</h1>
-            <ul style={{ listStyleType: 'none', padding: 0 }}>
-                {products.map((product) => (
-                    // show details of each product in same line, with view and edit buttons
-                    // when view or edit button is clicked, navigate to EditProduct component, and pass the product id as a parameter in the url. The EditProduct component will fetch the product details from the backend using the product id, and show the product details in a form, and allow the admin user to edit the product details. When the admin user submits the form, send a PUT request to the backend to update the product details in the database. Also show a delete button that will allow the admin user to delete the product from the database.
-                    <li key={product.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid #ccc', padding: '20px', marginBottom: '10px' }}>
-                        <div >
-                            <h2>{product.name}</h2>
-                        </div>
-                        <div>
-                            <p>{product.description}</p>
-                        </div>
-                        <div>
-                            <p>Price: ${product.price.toFixed(2)}</p>
-                        </div>
+            {products.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '20px', border: '1px solid #ccc' }}>
+                    <p>No products found in the database.</p>
+                    <button onClick={() => navigate('/AddProduct')}>Add Product</button>
+                </div>
+            ) : (
+                <ul style={{ listStyleType: 'none', padding: 0 }}>
+                    {products.map((product) => (
+                        // show details of each product in same line, with view and edit buttons
+                        // when view or edit button is clicked, navigate to EditProduct component, and pass the product id as a parameter in the url. The EditProduct component will fetch the product details from the backend using the product id, and show the product details in a form, and allow the admin user to edit the product details. When the admin user submits the form, send a PUT request to the backend to update the product details in the database. Also show a delete button that will allow the admin user to delete the product from the database.
+                        <li key={product.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid #ccc', padding: '20px', marginBottom: '10px' }}>
+                            <div >
+                                <h2>{product.name}</h2>
+                            </div>
+                            <div>
+                                <p>{product.description}</p>
+                            </div>
+                            <div>
+                                <p>Price: ${product.price.toFixed(2)}</p>
+                            </div>
 
-                        <div >
-                            <div className="counter" style={{ cursor: 'pointer', fontWeight: 'bold', marginTop: '10px', marginRight: '10px' }}>
-                                <button style={{ backgroundColor: 'blue', border: 'none', padding: '10px 20px', cursor: 'pointer' }} onClick={() => navigate(`/EditProduct/${product.id}`)}>View</button>
+                            <div >
+                                <div className="counter" style={{ cursor: 'pointer', fontWeight: 'bold', marginTop: '10px', marginRight: '10px' }}>
+                                    <button style={{ backgroundColor: 'blue', border: 'none', padding: '10px 20px', cursor: 'pointer' }} onClick={() => navigate(`/EditProduct/${product.id}`)}>View</button>
+                                </div>
+                                <div className="counter" style={{ cursor: 'pointer', fontWeight: 'bold', marginTop: '10px' }}>
+                                    <button style={{ backgroundColor: 'green', border: 'none', padding: '10px 20px', cursor: 'pointer' }} onClick={() => navigate(`/EditProduct/${product.id}`)}>Edit</button>
+                                </div>
                             </div>
-                            <div className="counter" style={{ cursor: 'pointer', fontWeight: 'bold', marginTop: '10px' }}>
-                                <button style={{ backgroundColor: 'green', border: 'none', padding: '10px 20px', cursor: 'pointer' }} onClick={() => navigate(`/EditProduct/${product.id}`)}>Edit</button>
-                            </div>
-                        </div>
-                    </li>
-                ))}
-            </ul>
+                        </li>
+                    ))}
+                </ul>
+            )}
+            
         </div>
     );
 };

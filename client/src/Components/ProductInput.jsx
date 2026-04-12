@@ -13,6 +13,7 @@ const ProductInput = () => {
     const [cashAmount, setCashAmount] = useState("");
     const [change, setChange] = useState(0);
     const [showReceipt, setShowReceipt] = useState(false);
+    const [lastRemoved, setLastRemoved] = useState(null);
 
     // Mock items data
     const items = [
@@ -40,8 +41,17 @@ const ProductInput = () => {
     };
 
     const removeItem = (index) => {
+        const itemToRemove = addedItems[index];
+        setLastRemoved(itemToRemove);
         setAddedItems(addedItems.filter((_, i) => i !== index));
     };
+
+    const undoRemove = () => {
+        if (lastRemoved) {
+            setAddedItems([...addedItems, lastRemoved]);
+            setLastRemoved(null);
+        }
+    }
 
     const logout = () => {
         localStorage.clear();
@@ -146,6 +156,14 @@ const ProductInput = () => {
 
                     {/* Calculations */}
                     <div style={{ marginTop: '20px' }}>
+                        {lastRemoved && (
+                            <button
+                                onClick={undoRemove}
+
+                            >
+                                Undo Last Remove ({lastRemoved.name})
+                            </button>
+                        )}
                         <div>Subtotal: ${subtotal.toFixed(2)}</div>
                         <div>Tax (13%): ${tax.toFixed(2)}</div>
                         <div>Total: ${total.toFixed(2)}</div>

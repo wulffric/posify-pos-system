@@ -39,3 +39,21 @@ router.post("/transactions/:id/refund", async (req, res) => {
 });
 
 module.exports = router;
+
+// M3 - Get daily sales report
+router.get('/reports/daily', async (req, res) => {
+  const { date } = req.query;
+
+  try {
+    const transactions = await Transaction.find({
+      date: {
+        $gte: new Date(date),
+        $lt: new Date(new Date(date).setDate(new Date(date).getDate() + 1))
+      }
+    });
+
+    res.json(transactions);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});

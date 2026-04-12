@@ -39,3 +39,30 @@ router.post("/transactions/:id/refund", async (req, res) => {
 });
 
 module.exports = router;
+
+// C3 - Confirm purchase
+router.post('/confirm', async (req, res) => {
+  const { items, total_amount } = req.body;
+
+  if (!items || items.length === 0) {
+    return res.status(400).json({ message: "Cart is empty" });
+  }
+
+  try {
+    const newTransaction = new Transaction({
+      items,
+      total_amount,
+      date: new Date(),
+      status: "confirmed"
+    });
+
+    await newTransaction.save();
+
+    res.json({
+      message: "Purchase confirmed",
+      transaction: newTransaction
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});

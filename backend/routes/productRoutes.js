@@ -86,3 +86,29 @@ router.get("/products/barcode/:code", async (req, res) => {
 });
 
 module.exports = router;
+
+// CA2 - Remove product from cart
+router.delete('/cart/:productId', (req, res) => {
+  const { productId } = req.params;
+
+  // Example logic (adjust if cart exists elsewhere)
+  if (!req.app.locals.cart) {
+    req.app.locals.cart = [];
+  }
+
+  let cart = req.app.locals.cart;
+
+  const index = cart.findIndex(item => item.product_id === productId);
+
+  if (index === -1) {
+    return res.status(404).json({ message: "Item not found in cart" });
+  }
+
+  if (cart[index].quantity > 1) {
+    cart[index].quantity -= 1;
+  } else {
+    cart.splice(index, 1);
+  }
+
+  res.json({ message: "Item removed from cart", cart });
+});

@@ -1,9 +1,10 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
-
+const jwt = require("jsonwebtoken");
 const router = express.Router();
 const User = require("../models/User");
-
+const verifyToken = require("../middleware/authMiddleware.js");
+const authorizeRoles = require("../middleware/roleMiddleware.js");
 /*
 REGISTER
 */
@@ -39,7 +40,11 @@ router.post("/register", async (req, res) => {
 });
 
 // test route to get all users (for admin purposes)
-router.get("/users", async (req, res) => {
+  router.get(
+    "/users",
+  verifyToken,
+  authorizeRoles("admin"),
+  async (req, res) => {
     try {
         const users = {'test': 'test'};
         res.json({ users });
@@ -60,16 +65,24 @@ router.post("/login", async (req, res) => {
 
     //hardcoded admin login for testing purposes
     if(email==="admin@gmail.com" && password==="admin"){
-        return res.json({
-            message: "Login successful",
-            user: {
-                id: "admin",
-                name: "Admin",
-                email: email,
-                role: "admin"
-            }
-        });
-    }
+   
+       const token = jwt.sign(
+           { id: "admin", role: "admin" },
+           "your_secret_key",
+           { expiresIn: "1d" }
+       );
+   
+       return res.json({
+           message: "Login successful",
+           token,
+           user: {
+               id: "admin",
+               name: "Admin",
+               email: email,
+               role: "admin"
+           }
+       });
+   }
 
     try {
         const user = await User.findOne({ email });
@@ -88,15 +101,24 @@ router.post("/login", async (req, res) => {
             return res.status(400).json({ error: "Invalid credentials" });
         }
 
-        res.json({
-            message: "Login successful",
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role
-            }
-        });
+        const token = jwt.sign(
+                   { id: user._id, role: user.role },
+                   "your_secret_key",
+                   { expiresIn: "1d" }
+               );
+       
+       
+               res.json({
+                   message: "Login successful",
+                   token,
+                   user: {
+                       id: user._id,
+                       name: user.name,
+                       email: user.email,
+                       role: user.role
+                   }
+               });
+       
 
     } catch (err) {
         res.status(500).json({ error: "Login failed1" });
